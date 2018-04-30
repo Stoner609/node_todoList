@@ -1,15 +1,11 @@
-var bodyParer = require('body-parser');
 var mongoose  = require('mongoose');
+var bodyParer = require('body-parser');
 require('dotenv').config();
+require('../lib/db');
 
 var urlencodeParser = bodyParer.urlencoded({ extended: false });
 
-mongoose.connect(process.env.DB_CONNECT);
-
-var todoSchema = new mongoose.Schema({
-    item: String
-});
-var Todo = mongoose.model('Todo', todoSchema);
+var Todo = mongoose.model('Todo');
 
 module.exports = function (app) {
     app.get('/todo', function (req, res) {

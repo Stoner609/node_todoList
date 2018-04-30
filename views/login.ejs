@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Todo List</title>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('form').on('submit', function (event) {
+                event.preventDefault();
+                var email = $('form input.email');
+                var password = $('form input.password');
+                var member = {
+                    email: email.val().trim(),
+                    password: password.val().trim(),
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/login',
+                    data: member,
+                    success: function (data) {
+                        //location.reload();
+                        $('#lblMessage').text(data.message);
+                    }
+                });
+
+                return false;
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div>
+        <form>
+            <input type="text" class="email" name="item" placeholder="email" required />
+            <input type="text" class="password" name="item" placeholder="password" required />
+            <button type="submit">Add Item</button>
+            <label id='lblMessage'></label>
+        </form>
+    </div>
+</body>
+
+</html>

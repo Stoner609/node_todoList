@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Todo List</title>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('form').on('submit', function (event) {
+                event.preventDefault();
+                var email = $('form input.email');
+                var password = $('form input.password');
+                var member = { 
+                    email: email.val().trim(),
+                    password: password.val().trim(),
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/singup',
+                    data: member,
+                    success: function (data) {
+                        location.reload();
+                    }
+                });
+
+                return false;
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div>
+        <form>
+            <input type="text" class="email" name="email" placeholder="enter email" required />
+            <br />
+            <input type="password" class="password" name="password" placeholder="enter password" required />
+            <br />
+            <button type="submit">Add Member</button>
+        </form>
+    </div>
+</body>
+
+</html>
