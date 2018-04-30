@@ -1,9 +1,10 @@
 var bodyParer = require('body-parser');
 var mongoose  = require('mongoose');
+require('dotenv').config();
 
 var urlencodeParser = bodyParer.urlencoded({ extended: false });
 
-mongoose.connect('mongodb://stoner:123@ds127564.mlab.com:27564/todo');
+mongoose.connect(process.env.DB_CONNECT);
 
 var todoSchema = new mongoose.Schema({
     item: String
