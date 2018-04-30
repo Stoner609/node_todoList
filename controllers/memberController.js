@@ -9,20 +9,14 @@ const urlencodeParser = bodyParer.urlencoded({ extended: false });
 const Member = mongoose.model('Member');
 
 module.exports = function (app) {
+    // 會員註冊頁面
     app.get('/singup', function (req, res, next) {
         Member.find({}, function (err, data) {
-
-            // const saltRounds = 10;
-            // const myPassword = '123456789';
-            // const hash = bcrypt.hashSync(myPassword, saltRounds);
-            // console.log(myPassword);
-            // console.log(hash);
-            // console.log(bcrypt.compareSync(myPassword, hash));
-
             res.render('singup');
         });
     });
 
+    // 會員註冊
     app.post('/singup', urlencodeParser, function (req, res) {
         const saltRounds = 10;
         const myPassword = req.body.password;
@@ -36,22 +30,22 @@ module.exports = function (app) {
             res.json(data);
         });
     });
-
+    
+    // 會員登入首頁
     app.get('/login', function (req, res) {
         Member.find({}, function (err, data) {
             res.render('login');
         });
     });
 
+    // 會員登入
     app.post('/login', urlencodeParser, function (req, res) {
-        //res.json(req.body);
         const myPassword = req.body.password;
 
         Member.findOne({
             email: req.body.email
         }, function (err, data) {
             if (err) throw err;
-
 
             let loginMessage = '';
             if (data == null) {
@@ -64,7 +58,6 @@ module.exports = function (app) {
                 } else {
                     loginMessage = '登入失敗';
                 }
-                //console.log(bcrypt.compareSync(myPassword, data.password));
                 res.json({ message: loginMessage });
             }
         });
