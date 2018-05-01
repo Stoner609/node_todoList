@@ -8,7 +8,7 @@ const urlencodeParser = bodyParer.urlencoded({ extended: false });
 module.exports = function (app) {
     // 會員註冊頁面
     app.get('/singup', function (req, res, next) {
-        Member.find({}, function (err, data) {
+        Member.find({}, (err, data) =>  {
             res.render('singup');
         });
     });
@@ -77,7 +77,7 @@ module.exports = function (app) {
     
     // 會員登入首頁
     app.get('/login', function (req, res) {
-        Member.find({}, function (err, data) {
+        Member.find({}, (err, data) => {
             res.render('login');
         });
     });
@@ -90,6 +90,9 @@ module.exports = function (app) {
             password
         } = body;
 
+        /**
+         * 驗證
+         */
         if (!email) {
             return res.json({
                 success: false,
@@ -103,6 +106,10 @@ module.exports = function (app) {
                 message: 'Error: password can not empty',
             });
         }
+
+        /**
+         * 比對
+         */
         email = email.toLowerCase();
         Member.find({
             email: email
@@ -128,5 +135,10 @@ module.exports = function (app) {
                 });
             }
         });
+
+        /**
+         * 發送token
+         */
+
     });
 }
