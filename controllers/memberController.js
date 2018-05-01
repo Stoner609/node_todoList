@@ -1,12 +1,9 @@
 const mongoose = require('mongoose');
 const bodyParer = require('body-parser');
 const bcrypt = require('bcrypt');
-require('dotenv').config();
-require('../lib/db');
+const Member = require('../lib/member');
 
 const urlencodeParser = bodyParer.urlencoded({ extended: false });
-
-const Member = mongoose.model('Member');
 
 module.exports = function (app) {
     // 會員註冊頁面
@@ -17,17 +14,64 @@ module.exports = function (app) {
     });
 
     // 會員註冊
-    app.post('/singup', urlencodeParser, function (req, res) {
-        const saltRounds = 10;
-        const myPassword = req.body.password;
-        const hash = bcrypt.hashSync(myPassword, saltRounds);
+    app.post('/singup', urlencodeParser, function (req, res, next) {
+        const { body } = req;
+        let {
+            name,
+            email,
+            password
+        } = body;
+        
+        /**
+         * 驗證
+         */
+        if (!name) {
+            return res.json({
+                success: false,
+                message: 'Error: name can not empty',
+            });
+        }
 
-        var itemMember = Member({
-            email: req.body.email,
-            password: hash
-        }).save(function (err, data) {
-            if (err) throw err;
-            res.json(data);
+        if (!email) {
+            return res.json({
+                success: false,
+                message: 'Error: email can not empty',
+            });
+        }
+
+        if (!password) {
+            return res.json({
+                success: false,
+                message: 'Error: password can not empty',
+            });
+        }
+
+        /**
+         * Insert Database
+         */
+        email = email.toLowerCase();
+        Member.find({
+            email: email
+        }, (err, data) => {
+            if(err) throw err;
+            if(data.length >= 1) {
+                return res.json({
+                    success: false,
+                    message: '重複'
+                });
+            } 
+
+            const newMember = new Member();
+            newMember.name = name;
+            newMember.email = email;
+            newMember.password = newMember.generateHash(password);
+            newMember.save((err, date)=> {
+                if (err) throw err;
+                res.json({
+                    success: true,
+                    message: '註冊成功'
+                });
+            });
         });
     });
     
@@ -40,25 +84,48 @@ module.exports = function (app) {
 
     // 會員登入
     app.post('/login', urlencodeParser, function (req, res) {
-        const myPassword = req.body.password;
+        const { body } = req;
+        let {
+            email,
+            password
+        } = body;
 
-        Member.findOne({
-            email: req.body.email
-        }, function (err, data) {
+        if (!email) {
+            return res.json({
+                success: false,
+                message: 'Error: email can not empty',
+            });
+        }
+
+        if (!password) {
+            return res.json({
+                success: false,
+                message: 'Error: password can not empty',
+            });
+        }
+        email = email.toLowerCase();
+        Member.find({
+            email: email
+        }, (err, data) => {
             if (err) throw err;
+            if (data.length != 1) {
+                return res.json({
+                    success: false,
+                    message: 'Error: email or password is wrong'
+                });
+            }
 
-            let loginMessage = '';
-            if (data == null) {
-                loginMessage = '查無此使用者';
-                res.json({ message: loginMessage })
-            } else {
-                const loginBool = bcrypt.compareSync(myPassword, data.password);
-                if (loginBool) {
-                    loginMessage = '登入成功';
-                } else {
-                    loginMessage = '登入失敗';
-                }
-                res.json({ message: loginMessage });
+            const loginMember = data[0];
+            if (!loginMember.validPassword(password) ){
+                return res.json({
+                    success: false,
+                    message: 'Error: Shit'
+                });
+            }else{
+                res.json({ 
+                    success: true,
+                    message: '登入成功' 
+                });
             }
         });
     });

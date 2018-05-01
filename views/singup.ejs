@@ -11,9 +11,11 @@
         $(document).ready(function () {
             $('form').on('submit', function (event) {
                 event.preventDefault();
+                var name = $('form input.name');
                 var email = $('form input.email');
                 var password = $('form input.password');
                 var member = { 
+                    name: name.val().trim(),
                     email: email.val().trim(),
                     password: password.val().trim(),
                 };
@@ -23,7 +25,8 @@
                     url: '/singup',
                     data: member,
                     success: function (data) {
-                        location.reload();
+                        //location.reload();
+                        console.log(data);
                     }
                 });
 
@@ -36,6 +39,8 @@
 <body>
     <div>
         <form>
+            <input type="text" class="name" name="name" placeholder="enter name" required />
+            <br />
             <input type="text" class="email" name="email" placeholder="enter email" required />
             <br />
             <input type="password" class="password" name="password" placeholder="enter password" required />

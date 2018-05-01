@@ -1,7 +1,7 @@
 var mongoose  = require('mongoose');
 var bodyParer = require('body-parser');
 require('dotenv').config();
-require('../lib/db');
+require('../lib/todo');
 
 var urlencodeParser = bodyParer.urlencoded({ extended: false });
 
