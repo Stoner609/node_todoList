@@ -27,6 +27,10 @@
                     success: function (data) {
                         //location.reload();
                         console.log(data);
+                        $('#message').text(data.message);
+                        name.val('');
+                        email.val('');
+                        password.val('');
                     }
                 });
 
@@ -46,6 +50,7 @@
             <input type="password" class="password" name="password" placeholder="enter password" required />
             <br />
             <button type="submit">Add Member</button>
+            <label id="message"></label>
         </form>
     </div>
 </body>
