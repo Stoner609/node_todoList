@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bodyParer = require('body-parser');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const Member = require('../lib/member');
 
 const urlencodeParser = bodyParer.urlencoded({ extended: false });
@@ -129,9 +130,18 @@ module.exports = function (app) {
                     message: 'Error: Shit'
                 });
             }else{
+                var Token = jwt.sign({
+                    id: data[0]._id,
+                    name: data[0].name,
+                    admin: true
+                }, process.env.SECRET, {
+                    expiresIn: 1000*60*2
+                });
+
                 res.json({ 
                     success: true,
-                    message: '登入成功' 
+                    message: '登入成功',
+                    Token: Token
                 });
             }
         });
