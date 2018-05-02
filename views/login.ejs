@@ -24,6 +24,7 @@
                     data: member,
                     success: function (data) {
                         $('#lblMessage').text(data.message);
+                        localStorage.setItem('Token', data.Token);
                     }
                 });
 
