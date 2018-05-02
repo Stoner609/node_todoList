@@ -28,3 +28,6 @@ https://stoner-todolist.herokuapp.com/login
 - 登入後使用token來辨識會員
 - 畫面ＵＩ優化
 - ...慢慢想
+
+## 意義不明
+請忽略根目錄下的server.js
